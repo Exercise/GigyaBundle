@@ -6,17 +6,17 @@
     "homepage": "https://github.com/Exercise/GigyaBundle",
     "license": "MIT",
     "authors": [
-        { "name": "Alex Kovalevych", "email": "alexkovalevych@gmail.com" },
+        { "name": "Alex Kovalevych", "email": "alexkovalevych@gmail.com" }
     ],
     "require": {
         "php": ">=5.3.2",
         "symfony/framework-bundle": "~2.1",
-        "alexkovalevych/gigya": "1.0"
+        "alexkovalevych/gigya": "1.0.*@dev"
     },
     "autoload": {
         "psr-0": { "Exercise\\GigyaBundle": "" }
     },
-    "target-dir": "Exercise/ElasticaBundle",
+    "target-dir": "Exercise/GigyaBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
