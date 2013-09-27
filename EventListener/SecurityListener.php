@@ -31,10 +31,16 @@ class SecurityListener implements LogoutHandlerInterface
     public function onLogin(InteractiveLoginEvent $event)
     {
         $user = $event->getAuthenticationToken()->getUser();
-        if (($user instanceof GigyaUserInterface) && ($uid = $user->getUid())) {
+        if (!($user instanceof GigyaUserInterface)) {
+            return;
+        }
+
+        if ($uid = $user->getUid()) {
             if (!$this->gigya->isLoggedIn($uid)) {
                 $this->gigya->login($uid);
             }
+        } else {
+            $this->gigya->register($user);
         }
     }
 

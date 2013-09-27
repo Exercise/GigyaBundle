@@ -8,6 +8,11 @@ namespace Exercise\GigyaBundle\Model;
 interface GigyaUserInterface
 {
     /**
+     * @return integer
+     */
+    public function getId();
+
+    /**
      * @return string
      */
     public function getUid();
