@@ -40,7 +40,15 @@ class SecurityListener implements LogoutHandlerInterface
                 $this->gigya->login($uid);
             }
         } else {
-            $this->gigya->register($user);
+            if (false) {
+                // check that user with username exists or not in the gigya and link accounts in that case
+            } else {
+                $initRegistration = $this->gigya->initRegistration();
+                $token = $initRegistration->getString('regToken');
+                $registration = $this->gigya->register($user, $token);
+                $user->setUid($registration->getString('UID'));
+                $this->gigya->finalizeRegistration($token);
+            }
         }
     }
 

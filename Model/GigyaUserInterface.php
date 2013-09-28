@@ -22,4 +22,16 @@ interface GigyaUserInterface
      * @return self
      */
     public function setUid($uid);
+
+    /**
+     * Should return raw password to send it to gigya
+     *
+     * @return string
+     */
+    public function getRawPassword();
+
+    /**
+     * @return array
+     */
+    public function getGigyaProfile();
 }

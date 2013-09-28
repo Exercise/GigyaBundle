@@ -6,7 +6,9 @@ use Exercise\GigyaBundle\Model\GigyaUserInterface;
 
 class Gigya
 {
-    const METHOD_ACCOUNT_REGISTER = 'accounts.register';
+    const METHOD_ACCOUNTS_INIT_REGISTRATION = 'accounts.initRegistration';
+    const METHOD_ACCOUNTS_FINALIZE_REGISTRATION = 'accounts.finalizeRegistration';
+    const METHOD_ACCOUNTS_REGISTER = 'accounts.register';
     const METHOD_GET_USER_INFO = 'socialize.getUserInfo';
     const METHOD_NOTIFY_LOGIN = 'socialize.notifyLogin';
     const METHOD_LOGOUT = 'socialize.logout';
@@ -61,14 +63,41 @@ class Gigya
     }
 
     /**
-     * @param  GigyaUserInterface $user
      * @return GSResponse
      */
-    public function register(GigyaUserInterface $user)
+    public function initRegistration()
     {
-        return $this->sendRequest(self::METHOD_ACCOUNT_REGISTER, array(
-            'username' => $user->getUsername()
+        return $this->sendRequest(self::METHOD_ACCOUNTS_INIT_REGISTRATION);
+    }
+
+    /**
+     * @param  GigyaUserInterface $user
+     * @param  string             $token
+     * @return GSResponse
+     */
+    public function register(GigyaUserInterface $user, $token)
+    {
+        $profile = array_filter($user->getGigyaProfile(), function($value) {
+            return $value;
+        });
+
+        return $this->sendRequest(self::METHOD_ACCOUNTS_REGISTER, array(
+            'password' => $user->getRawPassword(),
+            'email'    => $user->getEmailCanonical(),
+            'regToken' => $initRegistration->getString('regToken'),
+            'profile'  => $profile,
         ), true);
+    }
+
+    /**
+     * @param  string $token
+     * @return GSResponse
+     */
+    public function finalizeRegistration($token)
+    {
+        return $this->sendRequest(self::METHOD_ACCOUNTS_FINALIZE_REGISTRATION, array(
+            'regToken' => $token
+        ));
     }
 
     /**
@@ -104,6 +133,6 @@ class Gigya
             return $response->getData();
         }
 
-        throw new \GSException($response->getErrorMessage());
+        throw new \GSException(sprintf("%s: %s", $response->getErrorCode(), $response->getErrorMessage()));
     }
 }
