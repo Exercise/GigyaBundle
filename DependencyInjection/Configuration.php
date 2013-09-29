@@ -19,6 +19,10 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('api_key')->isRequired()->end()
                 ->scalarNode('secret_key')->isRequired()->end()
+                ->enumNode('login_identifier')
+                    ->values(array('username', 'email'))
+                    ->defaultValue(null)
+                ->end()
             ->end();
 
         return $treeBuilder;

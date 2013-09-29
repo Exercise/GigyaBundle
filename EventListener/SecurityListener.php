@@ -2,8 +2,10 @@
 
 namespace Exercise\GigyaBundle\EventListener;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Exercise\GigyaBundle\Model\GigyaUserInterface;
-use Exercise\GigyaBundle\Gigya;
+use Exercise\GigyaBundle\Rest\Accounts;
+use Exercise\GigyaBundle\Rest\IdentityStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -18,11 +20,23 @@ class SecurityListener implements LogoutHandlerInterface
     protected $gigya;
 
     /**
+     * @var \Exercise\GigyaBundle\Rest\IdentityStorage
+     */
+    protected $storage;
+
+    /**
+     * @var \Doctrine\Common\Persistence\ObjectManager
+     */
+    protected $om;
+
+    /**
      * @param Gigya $gigya
      */
-    public function __construct(Gigya $gigya)
+    public function __construct(Accounts $gigya, IdentityStorage $storage, ObjectManager $om)
     {
         $this->gigya = $gigya;
+        $this->storage = $storage;
+        $this->om = $om;
     }
 
     /**
@@ -35,20 +49,18 @@ class SecurityListener implements LogoutHandlerInterface
             return;
         }
 
-        if ($uid = $user->getUid()) {
-            if (!$this->gigya->isLoggedIn($uid)) {
-                $this->gigya->login($uid);
-            }
+        $identifier = $this->gigya->getLoginIdentifier();
+        $uid = $user->getUid() ?: $this->storage->findAccountsByField($identifier, $user->{sprintf("get%s", $identifier)}(), 1)->getString('UID');
+        if ($uid) {
+            $user->setUid($uid);
+            $this->gigya->login($user, $event->getRequest()->request->get('_password'));
+            $this->om->flush($user);
         } else {
-            if (false) {
-                // check that user with username exists or not in the gigya and link accounts in that case
-            } else {
-                $initRegistration = $this->gigya->initRegistration();
-                $token = $initRegistration->getString('regToken');
-                $registration = $this->gigya->register($user, $token);
-                $user->setUid($registration->getString('UID'));
-                $this->gigya->finalizeRegistration($token);
-            }
+            $initRegistration = $this->gigya->initRegistration();
+            $token = $initRegistration->getString('regToken');
+            $registration = $this->gigya->register($user, $token);
+            $user->setUid($registration->getString('UID'));
+            $this->gigya->finalizeRegistration($token);
         }
     }
 
@@ -61,9 +73,9 @@ class SecurityListener implements LogoutHandlerInterface
     {
         if ($token->getUser() instanceof GigyaUserInterface) {
             $uid = $token->getUser()->getUid();
-            if ($this->gigya->isLoggedIn($uid)) {
-                $this->gigya->logout($uid);
-            }
+            // if ($this->gigya->isLoggedIn($uid)) {
+            // $this->gigya->logout($uid);
+            // }
         }
     }
 }

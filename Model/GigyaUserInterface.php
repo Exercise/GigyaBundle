@@ -3,15 +3,10 @@
 namespace Exercise\GigyaBundle\Model;
 
 /**
- * Defines that user is able to keep gigya uid data
+ * Defines that user is able to keep gigya required data
  */
 interface GigyaUserInterface
 {
-    /**
-     * @return integer
-     */
-    public function getId();
-
     /**
      * @return string
      */
@@ -29,6 +24,16 @@ interface GigyaUserInterface
      * @return string
      */
     public function getRawPassword();
+
+    /**
+     * @return string
+     */
+    public function getUsername();
+
+    /**
+     * @return string
+     */
+    public function getEmail();
 
     /**
      * @return array
