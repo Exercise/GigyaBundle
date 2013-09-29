@@ -50,7 +50,13 @@ class SecurityListener implements LogoutHandlerInterface
         }
 
         $identifier = $this->gigya->getLoginIdentifier();
-        $uid = $user->getUid() ?: $this->storage->findAccountsByField($identifier, $user->{sprintf("get%s", $identifier)}(), 1)->getString('UID');
+        if (!($uid = $user->getUid())) {
+            $gigyaUser = $this->storage->findAccountsByField($identifier, $user->{sprintf("get%s", $identifier)}(), 1);
+            if ($gigyaUser instanceof \GSObject) {
+                $uid = $gigyaUser->getString('UID');
+            }
+        }
+
         if ($uid) {
             $user->setUid($uid);
             $this->gigya->login($user, $event->getRequest()->request->get('_password'));
@@ -60,7 +66,6 @@ class SecurityListener implements LogoutHandlerInterface
             $token = $initRegistration->getString('regToken');
             $registration = $this->gigya->register($user, $token);
             $user->setUid($registration->getString('UID'));
-            $this->gigya->finalizeRegistration($token);
         }
     }
 
@@ -73,9 +78,7 @@ class SecurityListener implements LogoutHandlerInterface
     {
         if ($token->getUser() instanceof GigyaUserInterface) {
             $uid = $token->getUser()->getUid();
-            // if ($this->gigya->isLoggedIn($uid)) {
-            // $this->gigya->logout($uid);
-            // }
+            $this->gigya->logout($uid);
         }
     }
 }

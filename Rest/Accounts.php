@@ -52,18 +52,22 @@ class Accounts
     /**
      * @param  GigyaUserInterface $user
      * @param  string             $token
+     * @param  boolean            $finalize
      * @return GSResponse
      */
-    public function register(GigyaUserInterface $user, $token)
+    public function register(GigyaUserInterface $user, $token, $finalize = true)
     {
         $profile = array_filter($user->getGigyaProfile(), function($value) {
             return $value;
         });
 
-        return $this->requestor->sendRequest(self::METHOD_REGISTER, array_merge($this->getIdentifierValues($user), array(
-            'regToken' => $initRegistration->getString('regToken'),
-            'profile'  => $profile,
-        )), true);
+        return $this->requestor->sendRequest(self::METHOD_REGISTER, array(
+            $this->loginIdentifier => $this->getIdentifier($user),
+            'password'             => $user->getRawPassword(),
+            'regToken'             => $token,
+            'profile'              => $profile,
+            'finalizeRegistration' => $finalize
+        ), true);
     }
 
     /**
@@ -84,7 +88,10 @@ class Accounts
      */
     public function login(GigyaUserInterface $user, $password)
     {
-        return $this->requestor->sendRequest(self::METHOD_LOGIN, $this->getIdentifierValues($user, $password), true);
+        return $this->requestor->sendRequest(self::METHOD_LOGIN, array(
+            'loginID'  => $this->getIdentifier($user),
+            'password' => $password
+        ), true);
     }
 
     /**
@@ -100,23 +107,14 @@ class Accounts
 
     /**
      * @param  GigyaUserInterface $user
-     * @param  string             $password
-     * @return array
+     * @return string
      */
-    protected function getIdentifierValues(GigyaUserInterface $user, $password = null)
+    public function getIdentifier(GigyaUserInterface $user)
     {
-        $identifierValues = array();
-        switch ($this->loginIdentifier) {
-            case 'username':
-                $identifierValues['loginID'] = $user->getUsername();
-                break;
-            default:
-                $identifierValues['loginID'] = $user->getEmail();
-                break;
+        if ($this->loginIdentifier == 'username') {
+            return $user->getUsername();
         }
 
-        return array_merge($identifierValues, array(
-            'password' => $user->getRawPassword() ?: $password
-        ));
+        return $user->getEmail();
     }
 }

@@ -1,14 +1,14 @@
 <?php
 
-namespace Users\Sites\Exercise\GigyaBundle\Rest;
+namespace Exercise\GigyaBundle\Rest;
 
 use Exercise\GigyaBundle\GigyaRequestor;
 
 class Socialize
 {
-    const SOCIALIZE_GET_USER_INFO = 'socialize.getUserInfo';
-    const SOCIALIZE_NOTIFY_LOGIN = 'socialize.notifyLogin';
-    const SOCIALIZE_LOGOUT = 'socialize.logout';
+    const METHOD_GET_USER_INFO = 'socialize.getUserInfo';
+    const METHOD_NOTIFY_LOGIN = 'socialize.notifyLogin';
+    const METHOD_LOGOUT = 'socialize.logout';
 
     /**
      * @param GigyaRequestor
