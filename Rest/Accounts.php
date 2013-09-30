@@ -11,6 +11,7 @@ class Accounts
     const METHOD_FINALIZE_REGISTRATION = 'accounts.finalizeRegistration';
     const METHOD_NOTIFY_LOGIN = 'accounts.notifyLogin';
     const METHOD_REGISTER = 'accounts.register';
+    const METHOD_RESET_PASSWORD = 'accounts.resetPassword';
     const METHOD_LOGIN = 'accounts.login';
     const METHOD_LOGOUT = 'accounts.logout';
 
@@ -141,5 +142,30 @@ class Accounts
         }
 
         return $user->getEmail();
+    }
+
+    /**
+     * @param  GigyaUserInterface $user
+     * @return GSResponse
+     */
+    public function resetPasswordToken(GigyaUserInterface $user)
+    {
+        return $this->requestor->sendRequest(self::METHOD_RESET_PASSWORD, array(
+            'loginID'   => $this->getIdentifier($user),
+            'sendEmail' => false
+        ), true);
+    }
+
+    /**
+     * @param  string $token
+     * @param  string $password
+     * @return GSResponse
+     */
+    public function resetPassword($token, $password)
+    {
+        return $this->requestor->sendRequest(self::METHOD_RESET_PASSWORD, array(
+            'passwordResetToken' => $token,
+            'newPassword'        => $password,
+        ), true);
     }
 }
