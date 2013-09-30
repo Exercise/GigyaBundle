@@ -9,6 +9,7 @@ class Accounts
 {
     const METHOD_INIT_REGISTRATION = 'accounts.initRegistration';
     const METHOD_FINALIZE_REGISTRATION = 'accounts.finalizeRegistration';
+    const METHOD_NOTIFY_LOGIN = 'accounts.notifyLogin';
     const METHOD_REGISTER = 'accounts.register';
     const METHOD_LOGIN = 'accounts.login';
     const METHOD_LOGOUT = 'accounts.logout';
@@ -39,6 +40,30 @@ class Accounts
     public function getLoginIdentifier()
     {
         return $this->loginIdentifier;
+    }
+
+    /**
+     * @param  GigyaUserInterface $user
+     * @return GSResponse
+     */
+    public function notifyLogin(GigyaUserInterface $user, array $providerData = null)
+    {
+        $parameters = array();
+        if ($providerData) {
+            $providerParameters = array();
+            foreach (array('authToken', 'tokenSecret', 'tokenExpiration') as $key) {
+                if (array_key_exists($key, $providerData)) {
+                    $providerParameters[$key] = $providerData[$key];
+                }
+            }
+            $parameters = array(
+                'providerSessions' => json_encode($providerParameters)
+            );
+        }
+
+        return $this->requestor->sendRequest(self::METHOD_NOTIFY_LOGIN, array_merge($parameters, array(
+            'siteUID' => $user->getUid()
+        )));
     }
 
     /**
