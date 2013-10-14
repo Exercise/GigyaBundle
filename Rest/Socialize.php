@@ -6,6 +6,7 @@ use Exercise\GigyaBundle\GigyaRequestor;
 
 class Socialize
 {
+    const METHOD_GET_FRIENDS_INFO = 'socialize.getFriendsInfo';
     const METHOD_GET_USER_INFO = 'socialize.getUserInfo';
     const METHOD_NOTIFY_LOGIN = 'socialize.notifyLogin';
     const METHOD_LOGOUT = 'socialize.logout';
@@ -25,6 +26,15 @@ class Socialize
     public function getUser($uid)
     {
         return $this->requestor->sendRequest(self::METHOD_GET_USER_INFO, array('UID' => $uid));
+    }
+
+    /**
+     * @param  string $uid
+     * @return GSResponse
+     */
+    public function getFriends($uid)
+    {
+        return $this->requestor->sendRequest(self::METHOD_GET_FRIENDS_INFO, array('UID' => $uid));
     }
 
     /**
