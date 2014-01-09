@@ -7,6 +7,7 @@ use Exercise\GigyaBundle\GigyaRequestor;
 class IdentityStorage
 {
     const METHOD_SEARCH = 'ids.search';
+    const ACCOUNT_INFO = 'ids.getAccountInfo';
 
     /**
      * @var \Exercise\GigyaBundle\GigyaRequestor
@@ -26,6 +27,17 @@ class IdentityStorage
     {
         return $this->requestor->sendRequest(self::METHOD_SEARCH, array(
             'query' => $query
+        ));
+    }
+
+    /**
+     * @param  string $uid
+     * @return GSResponse
+     */
+    public function getAccountInfo($uid)
+    {
+        return $this->requestor->sendRequest(self::ACCOUNT_INFO, array(
+            'uid' => $uid,
         ));
     }
 
