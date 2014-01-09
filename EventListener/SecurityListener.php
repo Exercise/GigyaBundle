@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 class SecurityListener implements LogoutHandlerInterface
 {
     /**
-     * @var \Exercise\GigyaBundle\Gigya
+     * @var \Exercise\GigyaBundle\Rest\Accounts
      */
     protected $gigya;
 
@@ -30,7 +30,7 @@ class SecurityListener implements LogoutHandlerInterface
     protected $om;
 
     /**
-     * @param Gigya $gigya
+     * @param Accounts $gigya
      */
     public function __construct(Accounts $gigya, IdentityStorage $storage, ObjectManager $om)
     {
