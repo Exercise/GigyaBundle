@@ -108,14 +108,14 @@ class Accounts
     }
 
     /**
-     * @param  GigyaUserInterface $user
-     * @param  string             $password
+     * @param  string $user
+     * @param  string $password
      * @return GSResponse
      */
-    public function login(GigyaUserInterface $user, $password)
+    public function login($loginId, $password)
     {
         return $this->requestor->sendRequest(self::METHOD_LOGIN, array(
-            'loginID'  => $this->getIdentifier($user),
+            'loginID'  => $loginId,
             'password' => $password
         ), true);
     }
