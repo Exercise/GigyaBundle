@@ -91,7 +91,7 @@ class Accounts
             $this->loginIdentifier => $this->getIdentifier($user),
             'password'             => $user->getRawPassword(),
             'regToken'             => $token,
-            'profile'              => $profile,
+            'profile'              => json_encode($profile),
             'finalizeRegistration' => $finalize
         ), true);
     }
