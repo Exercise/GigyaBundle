@@ -4,6 +4,7 @@ services:
         arguments:
             - %exercise.gigya.api_key%
             - %exercise.gigya.secret_key%
+            - @logger
 
     exercise.gigya_rest.socialize:
         class: Exercise\GigyaBundle\Rest\Socialize
