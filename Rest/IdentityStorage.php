@@ -49,6 +49,9 @@ class IdentityStorage
      */
     public function findAccountsByField($field, $value, $limit = null)
     {
+        if (empty($value)) {
+            return new \GSArray();
+        }
         $results = $this->search(sprintf('SELECT * FROM accounts WHERE %s = %s LIMIT %u', $field, $value, $limit))->getArray('results');
         if ($limit == 1 && $results->length() > 0) {
             return $results->getObject(0);
