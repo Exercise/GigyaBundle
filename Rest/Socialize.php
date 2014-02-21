@@ -10,7 +10,7 @@ class Socialize
     const METHOD_GET_USER_INFO = 'socialize.getUserInfo';
     const METHOD_NOTIFY_LOGIN = 'socialize.notifyLogin';
     const METHOD_LOGOUT = 'socialize.logout';
-    const NOTIFY_REGISTRATION = 'socialize.notifyRegistration';
+    const METHOD_NOTIFY_REGISTRATION = 'socialize.notifyRegistration';
 
     /**
      * @param GigyaRequestor
@@ -61,7 +61,7 @@ class Socialize
      */
     public function notifyRegistration($uid, $siteUID)
     {
-        return $this->requestor->sendRequest(self::NOTIFY_REGISTRATION, array(
+        return $this->requestor->sendRequest(self::METHOD_NOTIFY_REGISTRATION, array(
             'UID' => $uid,
             'siteUID' => $siteUID
         ));
