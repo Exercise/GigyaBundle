@@ -14,6 +14,7 @@ class Accounts
     const METHOD_RESET_PASSWORD = 'accounts.resetPassword';
     const METHOD_LOGIN = 'accounts.login';
     const METHOD_LOGOUT = 'accounts.logout';
+    const METHOD_SET_ACCOUNT_INFO = 'accounts.setAccountInfo';
 
     /**
      * @var \Exercise\GigyaBundle\GigyaRequestor
@@ -167,5 +168,18 @@ class Accounts
             'passwordResetToken' => $token,
             'newPassword'        => $password,
         ), true);
+    }
+
+    /**
+     * @param $uid
+     * @param array $data
+     * @return GSResponse
+     */
+    public function setAccountInfo($uid, array $data)
+    {
+        return $this->requestor->sendRequest(self::METHOD_SET_ACCOUNT_INFO, array(
+            'UID' => $uid,
+            'data' => json_encode($data)
+        ));
     }
 }
