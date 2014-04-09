@@ -153,7 +153,7 @@ class Accounts
     {
         return $this->requestor->sendRequest(self::METHOD_RESET_PASSWORD, array(
             'loginID'   => $this->getIdentifier($user),
-            'sendEmail' => false
+            'sendEmail' => 'false'
         ), true);
     }
 
@@ -180,6 +180,19 @@ class Accounts
         return $this->requestor->sendRequest(self::METHOD_SET_ACCOUNT_INFO, array(
             'UID' => $uid,
             'data' => json_encode($data)
+        ));
+    }
+
+    /**
+     * @param $uid
+     * @param $profile
+     * @return GSResponse
+     */
+    public function setProfile($uid, $profile)
+    {
+        return $this->requestor->sendRequest(self::METHOD_SET_ACCOUNT_INFO, array(
+            'UID' => $uid,
+            'profile' => $profile
         ));
     }
 }
